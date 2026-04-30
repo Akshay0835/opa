@@ -1,13 +1,11 @@
 package main
 
-
-deny[msg] {
+deny[msg] if {
     input.public == false
-    msg = "Public access is not allowed"
+    msg := "Public access is not allowed"
 }
 
-
-deny[msg] {
+deny[msg] if {
     input.env == "dev"
-    msg = "Deployment from dev environment is not allowed"
+    msg := "Deployment from dev environment is not allowed"
 }
