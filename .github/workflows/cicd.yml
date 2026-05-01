@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   policy-check:
@@ -13,11 +14,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
       - name: Install Conftest
         run: |
-          wget https://github.com/open-policy-agent/conftest/releases/latest/download/conftest_Linux_x86_64.tar.gz
-          tar xzf conftest_Linux_x86_64.tar.gz
-          sudo mv conftest /usr/local/bin
+          go install github.com/open-policy-agent/conftest/cmd/conftest@v0.67.0
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Verify Installation
+        run: conftest --version
 
       - name: Run OPA Policy Check
         run: |
